@@ -7,7 +7,7 @@ app.use(cors());
 
 // Connect Database
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri =
   "mongodb+srv://myHome:LfJd6cQjvRuaYm6v@cluster0.opkciwj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
@@ -28,7 +28,16 @@ async function run() {
     const propertiesCollection = client.db("myHome").collection("properties");
 
     // My API's
-    app.get("/properties", async (req, res) => {
+
+    app.get("/properties/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await propertiesCollection.findOne(query);
+
+      res.send(result);
+    });
+
+    app.get("/latestProperties", async (req, res) => {
       const result = await propertiesCollection
         .aggregate([
           {
