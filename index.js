@@ -1,9 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express();
 const port = 3000;
 app.use(cors());
+app.use(bodyParser.json());
 
 // Connect Database
 
@@ -26,6 +28,7 @@ async function run() {
     client.connect();
 
     const propertiesCollection = client.db("myHome").collection("properties");
+    const usersCollection = client.db("myHome").collection("users");
 
     // My API's
 
@@ -53,6 +56,50 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/featuredProperties", async (req, res) => {
+      const result = await propertiesCollection
+        .aggregate([
+          {
+            $match: {
+              featured: true,
+            },
+          },
+          {
+            $addFields: {
+              date: {
+                $toDate: "$available_from",
+              },
+            },
+          },
+          {
+            $sort: {
+              date: -1,
+            },
+          },
+        ])
+        .toArray();
+
+      console.log(result.length);
+
+      const featuredProperties = result.slice(0, 2);
+
+      res.send(featuredProperties);
+    });
+
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+
+      const exist = await usersCollection.findOne({ email: user?.email });
+
+      if (exist) {
+        return res.send({ exist: true });
+      }
+
+      const result = await usersCollection.insertOne(user);
+
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -66,7 +113,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("My Home");
+  res.send({ response: "My Home" });
 });
 
 app.listen(port);
