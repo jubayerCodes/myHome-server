@@ -40,21 +40,21 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/latestProperties", async (req, res) => {
-    //   const result = await propertiesCollection
-    //     .aggregate([
-    //       {
-    //         $addFields: {
-    //           date: { $toDate: "$available_from" },
-    //         },
-    //       },
-    //       { $sort: { date: -1 } },
-    //     ])
-    //     .limit(6)
-    //     .toArray();
+    app.get("/latestProperties", async (req, res) => {
+      const result = await propertiesCollection
+        .aggregate([
+          {
+            $addFields: {
+              date: { $toDate: "$available_from" },
+            },
+          },
+          { $sort: { date: -1 } },
+        ])
+        .limit(6)
+        .toArray();
 
-    //   res.send(result);
-    // });
+      res.send(result);
+    });
 
     app.get("/featuredProperties", async (req, res) => {
       const result = await propertiesCollection
