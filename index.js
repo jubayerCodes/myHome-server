@@ -42,10 +42,16 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/propertiesCount", async (req, res) => {
-      const total = await propertiesCollection.countDocuments();
+    app.get("/totalPages", async (req, res) => {
+      const { limit } = req.query;
 
-      res.send(total);
+      const filter = {};
+
+      const total = await propertiesCollection.countDocuments(filter);
+
+      const totalPages = Math.ceil(total / (limit || 1));
+
+      res.send(totalPages);
     });
 
     app.get("/properties/:id", async (req, res) => {
