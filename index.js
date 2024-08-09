@@ -45,13 +45,19 @@ async function run() {
     app.get("/totalPages", async (req, res) => {
       const { limit } = req.query;
 
+      console.log(limit);
+
       const filter = {};
 
       const total = await propertiesCollection.countDocuments(filter);
 
-      const totalPages = Math.ceil(total / (limit || 1));
+      console.log(total);
 
-      res.send(totalPages);
+      const totalPages = Math.ceil(total / limit);
+
+      console.log(totalPages);
+
+      res.send({ pages: totalPages });
     });
 
     app.get("/properties/:id", async (req, res) => {
