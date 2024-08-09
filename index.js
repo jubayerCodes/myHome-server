@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 
 const app = express();
 const port = 3000;
-app.use(cors());
+app.use(cors({ origin: "https://my-home-server.vercel.app/" }));
 app.use(bodyParser.json());
 
 // Connect Database
@@ -31,6 +31,15 @@ async function run() {
     const usersCollection = client.db("myHome").collection("users");
 
     // My API's
+
+    app.get("/properties", async (req, res) => {
+      const result = await propertiesCollection
+        .find()
+        .sort({ title: 1 })
+        .toArray();
+
+      res.send(result);
+    });
 
     app.get("/properties/:id", async (req, res) => {
       const id = req.params.id;
