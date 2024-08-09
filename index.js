@@ -36,6 +36,7 @@ async function run() {
       const result = await propertiesCollection
         .find()
         .sort({ title: 1 })
+        .limit(9)
         .toArray();
 
       res.send(result);
