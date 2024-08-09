@@ -41,7 +41,7 @@ async function run() {
         .find()
         .sort({ title: 1 })
         .skip(skip)
-        .limit(limit)
+        .limit(parseInt(limit))
         .toArray();
 
       res.send(result);
