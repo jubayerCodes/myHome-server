@@ -42,6 +42,12 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/propertiesCount", async (req, res) => {
+      const total = await propertiesCollection.countDocuments();
+
+      res.send(total);
+    });
+
     app.get("/properties/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
