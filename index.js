@@ -33,7 +33,7 @@ async function run() {
     // My API's
 
     app.get("/properties", async (req, res) => {
-      const { page, limit, type, category, city } = req.query;
+      const { page, limit, type, category, city, sort: sortBy } = req.query;
 
       const skip = (page - 1) * limit;
 
@@ -50,11 +50,55 @@ async function run() {
         query["address.city"] = city;
       }
 
+      let sort = { title: 1 };
+
+      if (sortBy === "price_high_low") {
+        sort = { price: -1 };
+      } else if (sortBy === "price_low_high") {
+        sort = { price: 1 };
+      } else if (sortBy === "newest_first") {
+        sort = { date: -1 };
+      } else if (sortBy === "oldest_first") {
+        sort = { date: 1 };
+      } else if (sortBy === "bedrooms_high_low") {
+        sort = { bedrooms: -1 };
+      } else if (sortBy === "bedrooms_low_high") {
+        sort = { bedrooms: 1 };
+      } else if (sortBy === "bathrooms_high_low") {
+        sort = { bathrooms: -1 };
+      } else if (sortBy === "bathrooms_low_high") {
+        sort = { bathrooms: 1 };
+      }
+
+      // const result = await propertiesCollection
+      //   .find(query)
+      //   .sort()
+      //   .skip(skip)
+      //   .limit(parseInt(limit))
+      //   .toArray();
+
       const result = await propertiesCollection
-        .find(query)
-        .sort({ title: 1 })
-        .skip(skip)
-        .limit(parseInt(limit))
+        .aggregate([
+          {
+            $match: query,
+          },
+          {
+            $addFields: {
+              date: {
+                $toDate: "$available_from",
+              },
+            },
+          },
+          {
+            $sort: sort,
+          },
+          {
+            $skip: skip,
+          },
+          {
+            $limit: parseInt(limit),
+          },
+        ])
         .toArray();
 
       res.send(result);
