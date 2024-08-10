@@ -33,12 +33,18 @@ async function run() {
     // My API's
 
     app.get("/properties", async (req, res) => {
-      const { page, limit } = req.query;
+      const { page, limit, type } = req.query;
 
       const skip = (page - 1) * limit;
 
+      let query = {};
+
+      if (type) {
+        query.listed_in = type;
+      }
+
       const result = await propertiesCollection
-        .find()
+        .find(query)
         .sort({ title: 1 })
         .skip(skip)
         .limit(parseInt(limit))
@@ -66,11 +72,15 @@ async function run() {
     });
 
     app.get("/totalPages", async (req, res) => {
-      const { limit } = req.query;
+      const { limit, type } = req.query;
 
-      const filter = {};
+      let query = {};
 
-      const total = await propertiesCollection.countDocuments(filter);
+      if (type) {
+        query.listed_in = type;
+      }
+
+      const total = await propertiesCollection.countDocuments(query);
 
       const totalPages = Math.ceil(total / limit);
 
