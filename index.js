@@ -33,7 +33,7 @@ async function run() {
     // My API's
 
     app.get("/properties", async (req, res) => {
-      const { page, limit, type, category } = req.query;
+      const { page, limit, type, category, city } = req.query;
 
       const skip = (page - 1) * limit;
 
@@ -45,6 +45,9 @@ async function run() {
 
       if (category) {
         query.category = category;
+      }
+      if (city) {
+        query.address.city = city;
       }
 
       const result = await propertiesCollection
@@ -76,7 +79,7 @@ async function run() {
     });
 
     app.get("/totalPages", async (req, res) => {
-      const { limit, type, category } = req.query;
+      const { limit, type, category, city } = req.query;
 
       let query = {};
 
@@ -86,6 +89,10 @@ async function run() {
 
       if (category) {
         query.category = category;
+      }
+
+      if (city) {
+        query.address.city = city;
       }
 
       const total = await propertiesCollection.countDocuments(query);
