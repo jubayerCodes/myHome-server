@@ -47,6 +47,24 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/propertiesFilterOptions", async (req, res) => {
+      const properties = await propertiesCollection.find().toArray();
+
+      const types = [
+        ...new Set(properties.map((property) => property.listed_in)),
+      ];
+
+      const categories = [
+        ...new Set(properties.map((property) => property.category)),
+      ];
+
+      const cities = [
+        ...new Set(properties.map((property) => property.address.city)),
+      ];
+
+      res.send({ types, categories, cities });
+    });
+
     app.get("/totalPages", async (req, res) => {
       const { limit } = req.query;
 
