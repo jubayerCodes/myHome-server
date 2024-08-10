@@ -92,7 +92,7 @@ async function run() {
       }
 
       if (city) {
-        query.address.city = city;
+        query.address = { city: city };
       }
 
       const total = await propertiesCollection.countDocuments(query);
