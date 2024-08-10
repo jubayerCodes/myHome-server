@@ -47,7 +47,7 @@ async function run() {
         query.category = category;
       }
       if (city) {
-        query.address.city = city;
+        query["address.city"] = city;
       }
 
       const result = await propertiesCollection
@@ -92,7 +92,7 @@ async function run() {
       }
 
       if (city) {
-        query.address = { city: city };
+        query["address.city"] = city;
       }
 
       const total = await propertiesCollection.countDocuments(query);
