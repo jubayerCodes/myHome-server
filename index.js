@@ -50,7 +50,7 @@ async function run() {
         query["address.city"] = city;
       }
 
-      let sort = { title: 1 };
+      let sort = { date: -1 };
 
       if (sortBy === "price_high_low") {
         sort = { price: -1 };
