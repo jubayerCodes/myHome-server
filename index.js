@@ -35,7 +35,11 @@ async function run() {
     app.get("/properties", async (req, res) => {
       const { page, limit, type, category, city, sort: sortBy } = req.query;
 
-      const skip = (page - 1) * limit;
+      let skip = 0;
+
+      if (page && limit) {
+        skip = (page - 1) * limit;
+      }
 
       let query = {};
 
