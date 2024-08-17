@@ -81,28 +81,31 @@ async function run() {
       //   .limit(parseInt(limit))
       //   .toArray();
 
-      const result = await propertiesCollection
-        .aggregate([
-          {
-            $match: query,
-          },
-          {
-            $addFields: {
-              date: {
-                $toDate: "$available_from",
-              },
+      const aggregateOptions = [
+        {
+          $match: query,
+        },
+        {
+          $addFields: {
+            date: {
+              $toDate: "$available_from",
             },
           },
-          {
-            $sort: sort,
-          },
-          {
-            $skip: skip,
-          },
-          {
-            $limit: parseInt(limit),
-          },
-        ])
+        },
+        {
+          $sort: sort,
+        },
+        {
+          $skip: skip,
+        },
+      ];
+
+      if (limit) {
+        aggregateOptions.push({ $limit: parseInt(limit) });
+      }
+
+      const result = await propertiesCollection
+        .aggregate(aggregateOptions)
         .toArray();
 
       res.send(result);
