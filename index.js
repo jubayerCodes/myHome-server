@@ -111,6 +111,34 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/similarProperties", async (req, res) => {
+      const { type, category } = req?.query;
+
+      const sort = { date: -1 };
+
+      let query = {};
+
+      if (type) {
+        query.listed_in = type;
+      }
+
+      if (category) {
+        query.category = category;
+      }
+
+      const aggregateOptions = [
+        { $match: query },
+        { $sort: sort },
+        { $limit: 2 },
+      ];
+
+      const result = await propertiesCollection
+        .aggregate(aggregateOptions)
+        .toArray();
+
+      res.send(result);
+    });
+
     app.get("/propertiesFilterOptions", async (req, res) => {
       const properties = await propertiesCollection.find().toArray();
 
