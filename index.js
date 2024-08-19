@@ -29,6 +29,7 @@ async function run() {
 
     const propertiesCollection = client.db("myHome").collection("properties");
     const usersCollection = client.db("myHome").collection("users");
+    const agentsCollection = client.db("myHome").collection("agents");
 
     // My API's
 
@@ -240,6 +241,10 @@ async function run() {
 
       if (exist) {
         return res.send({ exist: true });
+      }
+
+      if (user?.role === "agent") {
+        const createAgent = await agentsCollection.insertOne(user);
       }
 
       const result = await usersCollection.insertOne(user);
