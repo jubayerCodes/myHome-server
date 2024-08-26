@@ -137,9 +137,7 @@ async function run() {
         .aggregate(aggregateOptions)
         .toArray();
 
-      const final = result?.filter(
-        (property) => property?._id !== new ObjectId(_id)
-      );
+      const final = result?.filter((property) => property?._id != _id);
 
       res.send(final);
     });
