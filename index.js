@@ -113,7 +113,7 @@ async function run() {
     });
 
     app.get("/similarProperties", async (req, res) => {
-      const { type, category } = req?.query;
+      const { type, category, _id } = req?.query;
 
       const sort = { date: -1 };
 
@@ -137,7 +137,11 @@ async function run() {
         .aggregate(aggregateOptions)
         .toArray();
 
-      res.send(result);
+      const final = result?.filter(
+        (property) => property?._id !== ObjectId(_id)
+      );
+
+      res.send(final);
     });
 
     app.get("/propertiesFilterOptions", async (req, res) => {
