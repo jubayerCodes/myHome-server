@@ -138,7 +138,7 @@ async function run() {
         .toArray();
 
       const final = result?.filter(
-        (property) => property?._id !== ObjectId(_id)
+        (property) => property?._id !== new ObjectId(_id)
       );
 
       res.send(final);
