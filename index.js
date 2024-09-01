@@ -269,6 +269,15 @@ async function run() {
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
+
+    app.get("/agent", async (req, res) => {
+      const { email } = req.query;
+      const query = { role: "agent", email: email };
+
+      const result = await usersCollection.findOne(query);
+
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
