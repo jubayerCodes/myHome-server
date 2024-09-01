@@ -254,6 +254,16 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/user", async (req, res) => {
+      const { email } = req?.query;
+
+      const query = { email };
+
+      const result = usersCollection.findOne(query);
+
+      res.send(result);
+    });
+
     app.get("/role", async (req, res) => {
       const { email } = req.query;
 
@@ -264,11 +274,21 @@ async function run() {
       res.send({ role: role });
     });
 
+    // Agent Api
+
     app.get("/agent", async (req, res) => {
       const { email } = req.query;
       const query = { email: email };
 
       const result = await agentsCollection.findOne(query);
+
+      res.send(result);
+    });
+
+    app.put("/agent", async (req, res) => {
+      const email = req?.query?.email;
+      const agent = req?.body;
+      const result = await agentsCollection.updateOne({ email: email }, agent);
 
       res.send(result);
     });
