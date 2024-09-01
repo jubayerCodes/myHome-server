@@ -264,20 +264,20 @@ async function run() {
       res.send({ role: role });
     });
 
+    app.get("/agent", async (req, res) => {
+      const { email } = req.query;
+      const query = { email: email };
+
+      const result = await agentsCollection.findOne(query);
+
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
-
-    app.get("/agent", async (req, res) => {
-      const { email } = req.query;
-      const query = { role: "agent", email: email };
-
-      const result = await usersCollection.findOne(query);
-
-      res.send(result);
-    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
