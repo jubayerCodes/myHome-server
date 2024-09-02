@@ -285,10 +285,18 @@ async function run() {
       res.send(result);
     });
 
-    app.put("/agent", async (req, res) => {
+    app.patch("/agent", async (req, res) => {
       const email = req?.query?.email;
       const agent = req?.body;
-      const result = await agentsCollection.updateOne({ email: email }, agent);
+
+      const updatedAgent = {
+        $set: agent,
+      };
+
+      const result = await agentsCollection.updateOne(
+        { email: email },
+        updatedAgent
+      );
 
       res.send(result);
     });
