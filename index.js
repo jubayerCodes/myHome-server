@@ -78,13 +78,6 @@ async function run() {
         sort = { bathrooms: 1 };
       }
 
-      // const result = await propertiesCollection
-      //   .find(query)
-      //   .sort()
-      //   .skip(skip)
-      //   .limit(parseInt(limit))
-      //   .toArray();
-
       const aggregateOptions = [
         {
           $match: query,
@@ -198,6 +191,25 @@ async function run() {
     app.get("/latestProperties", async (req, res) => {
       const result = await propertiesCollection
         .aggregate([
+          {
+            $addFields: {
+              date: { $toDate: "$available_from" },
+            },
+          },
+          { $sort: { date: -1 } },
+        ])
+        .limit(6)
+        .toArray();
+
+      res.send(result);
+    });
+
+    app.get("/latestRents", async (req, res) => {
+      const result = await propertiesCollection
+        .aggregate([
+          {
+            $match: { listed_in: "rent" },
+          },
           {
             $addFields: {
               date: { $toDate: "$available_from" },
