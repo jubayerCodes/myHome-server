@@ -30,6 +30,9 @@ async function run() {
     const propertiesCollection = client.db("myHome").collection("properties");
     const usersCollection = client.db("myHome").collection("users");
     const agentsCollection = client.db("myHome").collection("agents");
+    const featuredCitiesCollection = client
+      .db("myHome")
+      .collection("featuredCities");
 
     // My API's
 
@@ -234,6 +237,27 @@ async function run() {
       const featuredProperties = result.slice(0, 2);
 
       res.send(featuredProperties);
+    });
+
+    app.get("/featuredCities", async (req, res) => {
+      const cities = await featuredCitiesCollection.find().toArray();
+
+      const updatedPromises = cities.map(async (city) => {
+        const citiesCount = await propertiesCollection.countDocuments({
+          "address.city": city?.name,
+        });
+
+        await featuredCitiesCollection.updateOne(
+          { name: city?.name },
+          { $set: { listings: citiesCount } }
+        );
+      });
+
+      await Promise.all(updatedPromises);
+
+      const updatedCities = await featuredCitiesCollection.find().toArray();
+
+      res.send(updatedCities);
     });
 
     app.post("/users", async (req, res) => {
