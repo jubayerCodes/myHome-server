@@ -33,6 +33,9 @@ async function run() {
     const featuredCitiesCollection = client
       .db("myHome")
       .collection("featuredCities");
+    const featuredCategoriesCollection = client
+      .db("myHome")
+      .collection("featuredCategories");
 
     // My API's
 
@@ -257,6 +260,7 @@ async function run() {
       const updatedPromises = cities.map(async (city) => {
         const citiesCount = await propertiesCollection.countDocuments({
           "address.city": city?.name,
+          status: "active",
         });
 
         await featuredCitiesCollection.updateOne(
@@ -270,6 +274,30 @@ async function run() {
       const updatedCities = await featuredCitiesCollection.find().toArray();
 
       res.send(updatedCities);
+    });
+
+    app.get("/featuredCategories", async (req, res) => {
+      const categories = await featuredCategoriesCollection.find().toArray();
+
+      const updatedPromises = categories.map(async (cat) => {
+        const categoriesCount = await propertiesCollection.countDocuments({
+          category: cat?.name,
+          status: "active",
+        });
+
+        await featuredCategoriesCollection.updateOne(
+          { name: cat?.name },
+          { $set: { listings: categoriesCount } }
+        );
+      });
+
+      await Promise.all(updatedPromises);
+
+      const updatedCategories = await featuredCategoriesCollection
+        .find()
+        .toArray();
+
+      res.send(updatedCategories);
     });
 
     app.post("/users", async (req, res) => {
