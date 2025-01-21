@@ -55,7 +55,7 @@ async function run() {
         skip = (page - 1) * limit;
       }
 
-      let query = {};
+      let query = {status: 'active'};
 
       if (type) {
         query.listed_in = type;
