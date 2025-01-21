@@ -88,7 +88,7 @@ async function run() {
       } else if (sortBy === "bathrooms_low_high") {
         sort = { bathrooms: 1 };
       } else if (sortBy === "pending") {
-        sort = { status: "pending" };
+        sort = { status: -1 };
       }
 
       const aggregateOptions = [
