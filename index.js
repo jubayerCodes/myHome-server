@@ -36,7 +36,7 @@ async function run() {
     const featuredCategoriesCollection = client
       .db("myHome")
       .collection("featuredCategories");
-      const adminCollection = client.db("myHome").collection("admins");
+    const adminCollection = client.db("myHome").collection("admins");
 
     // My API's
 
@@ -48,7 +48,7 @@ async function run() {
     });
 
     app.get("/properties", async (req, res) => {
-      const { page, limit, category, city, sort: sortBy } = req.query;
+      const { page, limit, category, city, sort: sortBy, active } = req.query;
 
       let skip = 0;
 
@@ -56,7 +56,11 @@ async function run() {
         skip = (page - 1) * limit;
       }
 
-      let query = {status: 'active'};
+      let query = {};
+
+      if (active) {
+        query.status = "active";
+      }
 
       if (category) {
         query.category = category;
