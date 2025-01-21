@@ -39,6 +39,13 @@ async function run() {
 
     // My API's
 
+    app.post("/property", async (req, res) => {
+      const property = req.body;
+      const result = await propertiesCollection.insertOne(property);
+
+      res.send(result);
+    });
+
     app.get("/properties", async (req, res) => {
       const { page, limit, type, category, city, sort: sortBy } = req.query;
 
@@ -310,7 +317,7 @@ async function run() {
       }
 
       if (user?.role === "agent") {
-        const createAgent = await agentsCollection.insertOne(user);
+        await agentsCollection.insertOne(user);
       }
 
       const result = await usersCollection.insertOne(user);
