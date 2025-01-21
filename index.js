@@ -48,7 +48,7 @@ async function run() {
     });
 
     app.get("/properties", async (req, res) => {
-      const { page, limit, type, category, city, sort: sortBy } = req.query;
+      const { page, limit, category, city, sort: sortBy } = req.query;
 
       let skip = 0;
 
@@ -57,10 +57,6 @@ async function run() {
       }
 
       let query = {status: 'active'};
-
-      if (type) {
-        query.listed_in = type;
-      }
 
       if (category) {
         query.category = category;
@@ -120,15 +116,11 @@ async function run() {
     });
 
     app.get("/similarProperties", async (req, res) => {
-      const { type, category, _id } = req?.query;
+      const { category, _id } = req?.query;
 
       const sort = { date: -1 };
 
       let query = {};
-
-      if (type) {
-        query.listed_in = type;
-      }
 
       if (category) {
         query.category = category;
@@ -152,10 +144,6 @@ async function run() {
     app.get("/propertiesFilterOptions", async (req, res) => {
       const properties = await propertiesCollection.find().toArray();
 
-      const types = [
-        ...new Set(properties.map((property) => property.listed_in)),
-      ];
-
       const categories = [
         ...new Set(properties.map((property) => property.category)),
       ];
@@ -164,17 +152,13 @@ async function run() {
         ...new Set(properties.map((property) => property.address.city)),
       ];
 
-      res.send({ types, categories, cities });
+      res.send({ categories, cities });
     });
 
     app.get("/totalPages", async (req, res) => {
-      const { limit, type, category, city } = req.query;
+      const { limit, category, city } = req.query;
 
       let query = {};
-
-      if (type) {
-        query.listed_in = type;
-      }
 
       if (category) {
         query.category = category;
@@ -202,25 +186,6 @@ async function run() {
     app.get("/latestProperties", async (req, res) => {
       const result = await propertiesCollection
         .aggregate([
-          {
-            $addFields: {
-              date: { $toDate: "$available_from" },
-            },
-          },
-          { $sort: { date: -1 } },
-        ])
-        .limit(6)
-        .toArray();
-
-      res.send(result);
-    });
-
-    app.get("/latestRents", async (req, res) => {
-      const result = await propertiesCollection
-        .aggregate([
-          {
-            $match: { listed_in: "rent" },
-          },
           {
             $addFields: {
               date: { $toDate: "$available_from" },
