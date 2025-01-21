@@ -36,6 +36,7 @@ async function run() {
     const featuredCategoriesCollection = client
       .db("myHome")
       .collection("featuredCategories");
+      const adminCollection = client.db("myHome").collection("admins");
 
     // My API's
 
@@ -367,6 +368,33 @@ async function run() {
       const result = await agentsCollection.updateOne(
         { email: email },
         updatedAgent
+      );
+
+      res.send(result);
+    });
+
+    // Admin Api
+
+    app.get("/admin", async (req, res) => {
+      const { email } = req.query;
+      const query = { email: email };
+
+      const result = await adminCollection.findOne(query);
+
+      res.send(result);
+    });
+
+    app.patch("/admin", async (req, res) => {
+      const email = req?.query?.email;
+      const admin = req?.body;
+
+      const updatedAdmin = {
+        $set: admin,
+      };
+
+      const result = await adminCollection.updateOne(
+        { email: email },
+        updatedAdmin
       );
 
       res.send(result);
