@@ -356,35 +356,17 @@ async function run() {
       res.send(result);
     });
 
-    app.patch("/agent", async (req, res) => {
+    app.patch("/user", async (req, res) => {
       const email = req?.query?.email;
-      const agent = req?.body;
+      const user = req?.body;
 
-      const updatedAgent = {
-        $set: agent,
+      const updatedUser = {
+        $set: user,
       };
 
       const result = await usersCollection.updateOne(
         { email: email },
-        updatedAgent
-      );
-
-      res.send(result);
-    });
-
-    // Admin Api
-
-    app.patch("/admin", async (req, res) => {
-      const email = req?.query?.email;
-      const admin = req?.body;
-
-      const updatedAdmin = {
-        $set: admin,
-      };
-
-      const result = await usersCollection.updateOne(
-        { email: email },
-        updatedAdmin
+        updatedUser
       );
 
       res.send(result);
