@@ -311,6 +311,16 @@ async function run() {
       res.send(updatedCategories);
     });
 
+    app.get("/users", async (req, res) => {
+      const { role } = req.query;
+
+      const query = { role: role };
+
+      const result = await usersCollection.find(query).toArray();
+
+      res.send(result);
+    });
+
     app.post("/users", async (req, res) => {
       const user = req.body;
 
