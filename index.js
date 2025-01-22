@@ -48,7 +48,7 @@ async function run() {
     });
 
     app.get("/properties", async (req, res) => {
-      const { page, limit, category, city, sort: sortBy, active } = req.query;
+      const { page, limit, category, city, sort: sortBy, status } = req.query;
 
       let skip = 0;
 
@@ -58,8 +58,8 @@ async function run() {
 
       let query = {};
 
-      if (active) {
-        query.status = "active";
+      if (status) {
+        query.status = status;
       }
 
       if (category) {
@@ -180,9 +180,13 @@ async function run() {
     });
 
     app.get("/totalPages", async (req, res) => {
-      const { limit, category, city } = req.query;
+      const { limit, category, city, status } = req.query;
 
       let query = {};
+
+      if (status) {
+        query.status = status;
+      }
 
       if (category) {
         query.category = category;
