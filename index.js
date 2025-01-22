@@ -29,14 +29,12 @@ async function run() {
 
     const propertiesCollection = client.db("myHome").collection("properties");
     const usersCollection = client.db("myHome").collection("users");
-    const agentsCollection = client.db("myHome").collection("agents");
     const featuredCitiesCollection = client
       .db("myHome")
       .collection("featuredCities");
     const featuredCategoriesCollection = client
       .db("myHome")
       .collection("featuredCategories");
-    const adminCollection = client.db("myHome").collection("admins");
 
     // My API's
 
@@ -322,10 +320,6 @@ async function run() {
         return res.send({ exist: true });
       }
 
-      if (user?.role === "agent") {
-        await agentsCollection.insertOne(user);
-      }
-
       const result = await usersCollection.insertOne(user);
 
       res.send(result);
@@ -353,11 +347,11 @@ async function run() {
 
     // Agent Api
 
-    app.get("/agent", async (req, res) => {
+    app.get("/user", async (req, res) => {
       const { email } = req.query;
       const query = { email: email };
 
-      const result = await agentsCollection.findOne(query);
+      const result = await usersCollection.findOne(query);
 
       res.send(result);
     });
@@ -370,7 +364,7 @@ async function run() {
         $set: agent,
       };
 
-      const result = await agentsCollection.updateOne(
+      const result = await usersCollection.updateOne(
         { email: email },
         updatedAgent
       );
@@ -380,15 +374,6 @@ async function run() {
 
     // Admin Api
 
-    app.get("/admin", async (req, res) => {
-      const { email } = req.query;
-      const query = { email: email };
-
-      const result = await adminCollection.findOne(query);
-
-      res.send(result);
-    });
-
     app.patch("/admin", async (req, res) => {
       const email = req?.query?.email;
       const admin = req?.body;
@@ -397,7 +382,7 @@ async function run() {
         $set: admin,
       };
 
-      const result = await adminCollection.updateOne(
+      const result = await usersCollection.updateOne(
         { email: email },
         updatedAdmin
       );
