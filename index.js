@@ -52,6 +52,8 @@ async function run() {
 
       let skip = 0;
 
+      console.log(status);
+
       if (page && limit) {
         skip = (page - 1) * limit;
       }
@@ -59,7 +61,7 @@ async function run() {
       let query = {};
 
       if (status) {
-        query.status = status;
+        query.status = status?.status;
       }
 
       if (category) {
@@ -68,6 +70,8 @@ async function run() {
       if (city) {
         query["address.city"] = city;
       }
+
+      console.log(query);
 
       let sort = { title: 1 };
 
@@ -115,6 +119,8 @@ async function run() {
       const result = await propertiesCollection
         .aggregate(aggregateOptions)
         .toArray();
+
+      console.log(result);
 
       res.send(result);
     });
