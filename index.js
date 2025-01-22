@@ -367,7 +367,7 @@ async function run() {
     });
 
     app.get("/totalUsers", async (req, res) => {
-      const { limit, role } = req.query;
+      const { role } = req.query;
 
       let query = {};
 
@@ -377,9 +377,7 @@ async function run() {
 
       const total = await usersCollection.countDocuments(query);
 
-      const totalPages = Math.ceil(total / limit);
-
-      res.send({ pages: totalPages });
+      res.send({ totalUsers: total });
     });
 
     app.get("/role", async (req, res) => {
