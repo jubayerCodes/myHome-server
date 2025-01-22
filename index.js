@@ -129,11 +129,7 @@ async function run() {
       const status = req.body;
       const id = req.params.id;
 
-      const updatedProperty = {
-        $set: {
-          status: status?.status,
-        },
-      };
+      const updatedProperty = { $set: { status: status?.status } };
 
       const result = await propertiesCollection.updateOne(
         {
@@ -141,6 +137,16 @@ async function run() {
         },
         updatedProperty
       );
+
+      res.send(result);
+    });
+
+    app.delete("/property/:id", async (req, res) => {
+      const id = req.params.id;
+
+      const query = { _id: new ObjectId(id) };
+
+      const result = await propertiesCollection.deleteOne(query);
 
       res.send(result);
     });
