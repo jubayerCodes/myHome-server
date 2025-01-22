@@ -327,7 +327,6 @@ async function run() {
 
     app.get("/user", async (req, res) => {
       const { email } = req?.query;
-
       const query = { email: email };
 
       const result = await usersCollection.findOne(query);
@@ -343,17 +342,6 @@ async function run() {
       const role = user?.role;
 
       res.send({ role: role });
-    });
-
-    // Agent Api
-
-    app.get("/user", async (req, res) => {
-      const { email } = req.query;
-      const query = { email: email };
-
-      const result = await usersCollection.findOne(query);
-
-      res.send(result);
     });
 
     app.patch("/user", async (req, res) => {
