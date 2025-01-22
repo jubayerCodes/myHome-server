@@ -118,8 +118,6 @@ async function run() {
         .aggregate(aggregateOptions)
         .toArray();
 
-      console.log(result);
-
       res.send(result);
     });
 
@@ -312,11 +310,35 @@ async function run() {
     });
 
     app.get("/users", async (req, res) => {
-      const { role } = req.query;
+      const { role, page, limit } = req.query;
 
       const query = { role: role };
 
-      const result = await usersCollection.find(query).toArray();
+      let skip = 0;
+
+      if (page && limit) {
+        skip = (page - 1) * limit;
+      }
+
+      const aggregateOptions = [
+        {
+          $match: query,
+        },
+        {
+          $sort: { displayName: 1 },
+        },
+        {
+          $skip: skip,
+        },
+      ];
+
+      if (limit) {
+        aggregateOptions.push({ $limit: parseInt(limit) });
+      }
+
+      const result = await usersCollection
+        .aggregate(aggregateOptions)
+        .toArray();
 
       res.send(result);
     });
@@ -342,6 +364,22 @@ async function run() {
       const result = await usersCollection.findOne(query);
 
       res.send(result);
+    });
+
+    app.get("/totalUsers", async (req, res) => {
+      const { limit, role } = req.query;
+
+      let query = {};
+
+      if (role) {
+        query.role = role;
+      }
+
+      const total = await usersCollection.countDocuments(query);
+
+      const totalPages = Math.ceil(total / limit);
+
+      res.send({ pages: totalPages });
     });
 
     app.get("/role", async (req, res) => {
