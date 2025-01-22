@@ -121,6 +121,26 @@ async function run() {
       res.send(result);
     });
 
+    app.patch("/property/:id", async (req, res) => {
+      const status = req.body.status;
+      const id = req.params.id;
+
+      const updatedProperty = {
+        $set: {
+          status,
+        },
+      };
+
+      const result = await propertiesCollection.updateOne(
+        {
+          _id: new ObjectId(id),
+        },
+        updatedProperty
+      );
+
+      res.send(result);
+    });
+
     app.get("/similarProperties", async (req, res) => {
       const { category, _id } = req?.query;
 
