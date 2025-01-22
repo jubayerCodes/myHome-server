@@ -312,7 +312,11 @@ async function run() {
     app.get("/users", async (req, res) => {
       const { role, page, limit } = req.query;
 
-      const query = { role: role };
+      let query = {};
+
+      if (role) {
+        query.role = role;
+      }
 
       let skip = 0;
 
