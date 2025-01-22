@@ -131,7 +131,7 @@ async function run() {
 
       const updatedProperty = {
         $set: {
-          status,
+          status: status?.status,
         },
       };
 
