@@ -61,7 +61,7 @@ async function run() {
       let query = {};
 
       if (status) {
-        query.status = status?.status;
+        query.status = status;
       }
 
       if (category) {
@@ -126,7 +126,7 @@ async function run() {
     });
 
     app.patch("/property/:id", async (req, res) => {
-      const status = req.body.status;
+      const status = req.body;
       const id = req.params.id;
 
       const updatedProperty = {
