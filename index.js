@@ -410,6 +410,15 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/user/:uid", async (req, res) => {
+      const uid = req.params.uid;
+
+      const query = { uid: uid };
+
+      const result = await usersCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
